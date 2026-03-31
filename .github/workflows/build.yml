@@ -107,7 +107,24 @@ jobs:
             --add-data "app/src/main/assets/proxytest_strategies.list;assets" `
             --add-data "app/src/main/assets/proxytest_telegram.sites;assets" `
             --add-data "app/src/main/assets/proxytest_speedtest.sites;assets" `
+            --paths "windows" `
+            --hidden-import "core.proxy" `
+            --hidden-import "core.preferences" `
+            --hidden-import "core.updater" `
+            --hidden-import "ui.main_window" `
+            --hidden-import "ui.settings_window" `
+            --hidden-import "ui.cmd_editor" `
+            --hidden-import "ui.tray" `
             windows/main.py
+
+      - name: Verify EXE was built
+        run: |
+          if (Test-Path "dist/NeoDPI.exe") {
+            Write-Host "EXE built successfully: $((Get-Item dist/NeoDPI.exe).Length) bytes"
+          } else {
+            Write-Error "EXE not found!"
+            exit 1
+          }
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4

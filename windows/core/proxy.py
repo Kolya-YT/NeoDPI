@@ -8,8 +8,12 @@ import winreg
 import ctypes
 
 if getattr(sys, 'frozen', False):
-    BYEDPI_EXE = os.path.join(sys._MEIPASS, "bin", "byedpi.exe")
-    STRATEGIES_FILE = os.path.join(sys._MEIPASS, "assets", "proxytest_strategies.list")
+    _base = sys._MEIPASS
+    BYEDPI_EXE = os.path.join(_base, "bin", "byedpi.exe")
+    # Fallback: check next to exe
+    if not os.path.exists(BYEDPI_EXE):
+        BYEDPI_EXE = os.path.join(os.path.dirname(sys.executable), "byedpi.exe")
+    STRATEGIES_FILE = os.path.join(_base, "assets", "proxytest_strategies.list")
 else:
     BYEDPI_EXE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "bin", "byedpi.exe")
     STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
@@ -102,6 +106,7 @@ def start(ip: str, port: str, extra_args: str = "") -> bool:
             print("[proxy] No strategies found")
 
     print(f"[proxy] Starting: {' '.join(cmd[:8])}{'...' if len(cmd) > 8 else ''}")
+    print(f"[proxy] byedpi path: {BYEDPI_EXE} (exists: {os.path.exists(BYEDPI_EXE)})")
 
     try:
         _process = subprocess.Popen(
