@@ -23,13 +23,19 @@ def is_running() -> bool:
 
 
 def _load_strategies() -> list:
+    # These flags are Linux-only and will crash byedpi on Windows
+    linux_only = {"-S", "-E", "-Y", "-P"}
     strategies = []
     if os.path.exists(STRATEGIES_FILE):
         with open(STRATEGIES_FILE, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
-                if line:
-                    strategies.append(line)
+                if not line:
+                    continue
+                tokens = set(line.split())
+                if tokens & linux_only:
+                    continue  # skip Linux-only strategies
+                strategies.append(line)
     return strategies
 
 
