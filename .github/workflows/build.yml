@@ -73,7 +73,10 @@ jobs:
       - name: Compile byedpi.exe
         shell: msys2 {0}
         run: |
-          gcc -O2 -std=c99 -DFAKE_SUPPORT -DTIMEOUT_SUPPORT \
+          # Fix SIGHUP not available on Windows
+          sed -i 's/signal(SIGHUP, on_hup);/#ifndef _WIN32\n    signal(SIGHUP, on_hup);\n    #endif/' \
+            app/src/main/cpp/byedpi/proxy.c
+          gcc -O2 -std=c99 -DFAKE_SUPPORT -DTIMEOUT_SUPPORT -D_WIN32 \
             app/src/main/cpp/byedpi/main.c \
             app/src/main/cpp/byedpi/proxy.c \
             app/src/main/cpp/byedpi/desync.c \
