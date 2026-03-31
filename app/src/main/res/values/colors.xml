@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="icon_color">#0B4680</color>
+    <color name="icon_color">#7C6FCD</color>
     <color name="green_active">#4CAF50</color>
+    <color name="neo_bg">#0D0D1A</color>
+    <color name="neo_surface">#161628</color>
+    <color name="neo_card">#1E1E35</color>
+    <color name="neo_accent">#7C6FCD</color>
+    <color name="neo_accent_dark">#5A4FB0</color>
+    <color name="neo_text_primary">#FFFFFF</color>
+    <color name="neo_text_secondary">#8888AA</color>
+    <color name="neo_green">#3DDC84</color>
+    <color name="neo_red">#FF5252</color>
 </resources>

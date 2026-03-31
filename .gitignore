@@ -20,3 +20,7 @@ local.properties
 
 # JNI
 app/src/main/jniLibs/
+neodpi.jks
+windows/data/
+__pycache__/
+*.pyc

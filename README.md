@@ -1,70 +1,93 @@
 <div align="center">
+  <h1>NeoDPI</h1>
   <p>
-    <img src="https://github.com/romanvht/ByeDPIAndroid/raw/master/.github/images/app.svg" alt="Логотип ByeDPI" width="200" />
-  </p>
-  <h1>ByeByeDPI Android</h1>
-  <p>
-    Русский |
-    <a href="README-en.md">English</a> |
-    <a href="README-tr.md">Türkçe</a>
+    <a href="https://github.com/Kolya-YT/NeoDPI/releases/latest"><img src="https://img.shields.io/github/v/release/Kolya-YT/NeoDPI" alt="Latest Release" /></a>
+    <a href="https://github.com/Kolya-YT/NeoDPI/releases"><img src="https://img.shields.io/github/downloads/Kolya-YT/NeoDPI/total" alt="Downloads" /></a>
+    <a href="https://github.com/Kolya-YT/NeoDPI/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Kolya-YT/NeoDPI" alt="License" /></a>
   </p>
   <p>
-    <a href="https://github.com/romanvht/ByeByeDPI/releases/latest"><img src="https://img.shields.io/github/v/release/romanvht/ByeByeDPI" alt="Latest Release" /></a>
-    <a href="https://github.com/romanvht/ByeByeDPI/releases"><img src="https://img.shields.io/github/downloads/romanvht/ByeByeDPI/total" alt="Downloads" /></a>
-    <a href="https://github.com/romanvht/ByeByeDPI/blob/master/LICENSE"><img src="https://img.shields.io/github/license/romanvht/ByeByeDPI" alt="License" /></a>
-    <a href="https://github.com/romanvht/ByeByeDPI"><img src="https://img.shields.io/github/languages/code-size/romanvht/ByeByeDPI" alt="GitHub code size in bytes"/></a>
+    <a href="https://t.me/NeoTunl">Telegram</a> •
+    <a href="http://neotun.ru/">Сайт</a>
   </p>
 </div>
 
-Приложение для Android, которое локально запускает ByeDPI и перенаправляет весь трафик через него.
+Инструмент для обхода блокировок DPI. Доступен для **Android** и **Windows**.
 
-Для стабильной работы может потребоваться изменить настройки. Подробнее о различных настройках можно прочитать в [документации ByeDPI](https://github.com/hufrea/byedpi/blob/v0.13/README.md).
+Не является VPN. Не шифрует трафик и не скрывает IP-адрес. Использует десинхронизацию пакетов для обхода блокировок.
 
-Приложение не является VPN. Оно использует VPN-режим на Android для перенаправления трафика, но не передает ничего на удаленный сервер. Оно не шифрует трафик и не скрывает ваш IP-адрес.
+---
 
-Приложения является форком [ByeDPIAndroid](https://github.com/dovecoteescapee/ByeDPIAndroid)
+### Платформы
+
+| Платформа | Статус |
+|-----------|--------|
+| Android | ✅ APK |
+| Windows | ✅ EXE (GUI) |
 
 ---
 
 ### Возможности
-* Автозапуск сервиса при старте устройства
-* Сохранение списков параметров командной строки
-* Улучшена совместимость с Android TV/BOX
-* Раздельное туннелирование приложений
-* Импорт/экспорт настроек
+- Обход блокировок DPI без VPN
+- Автоподбор стратегий десинхронизации
+- Встроенная стратегия для Telegram
+- Режимы: VPN (Android) / Proxy (Android + Windows)
+- Раздельное туннелирование приложений (Android)
+- Системный прокси для всего ПК (Windows)
+- Автозапуск при старте устройства/системы
+- Импорт/экспорт настроек (Android)
+- История стратегий командной строки
 
-### Использование
-* Для работы автозапуска активируйте пункт в настройках.
-* Рекомендуется подключится один раз к VPN, чтобы принять запрос.
-* После этого, при загрузке устройства, приложение автоматически запустит сервис в зависимости от настроек (VPN/Proxy)
-* Комплексная инструкция от комьюнити [ByeByeDPI-Manual](https://github.com/BDManual/ByeByeDPI-Manual)
+---
 
-### Как использовать ByeByeDPI вместе с AdGuard?
-* Запустите ByeByeDPI в режиме прокси.
-* Добавьте ByeByeDPI в исключения AdGuard на вкладке "Управление приложениями".
-* В настройках AdGuard укажите прокси:
-```plaintext
-Тип прокси: SOCKS5
+### Android
+
+#### Установка
+Скачай APK из [Releases](https://github.com/Kolya-YT/NeoDPI/releases/latest) и установи на устройство.
+
+#### Использование с AdGuard
+1. Запусти NeoDPI в режиме прокси
+2. Добавь NeoDPI в исключения AdGuard → "Управление приложениями"
+3. В настройках AdGuard укажи прокси:
+```
+Тип: SOCKS5
 Хост: 127.0.0.1
-Порт: 1080 (по умолчанию)
+Порт: 1080
 ```
 
-### Сборка
-1. Клонируйте репозиторий с сабмодулями:
+---
+
+### Windows
+
+#### Требования
+- Windows 10/11
+- Python 3.10+ (для запуска из исходников)
+
+#### Запуск из исходников
 ```bash
-git clone --recurse-submodules
+pip install customtkinter pystray pillow
+python windows/main.py
 ```
-2. Запустите скрипт сборки из корня репозитория:
+
+#### Использование
+1. Нажми **Старт** — прокси запустится и системный прокси включится автоматически
+2. Весь трафик браузеров и приложений пойдёт через NeoDPI
+3. Нажми **Стоп** для отключения
+
+---
+
+### Сборка Android
+
 ```bash
+git clone --recurse-submodules https://github.com/Kolya-YT/NeoDPI.git
+cd NeoDPI
 ./gradlew assembleRelease
 ```
-3. APK будет в `app/build/outputs/apk/release/`
 
-> P.S.: hev_socks5_tunnel не соберется под Windows, вам нужно будет использовать WSL
+APK будет в `app/build/outputs/apk/release/`
 
-### Хеш подписи
-SHA-256: 
-`77:45:10:75:AC:EA:40:64:06:47:5D:74:D4:59:88:3A:49:A6:40:51:FA:F3:2E:42:F7:18:F3:F9:77:7A:8D:FB`
+> Для сборки на Windows нужен WSL или MSYS2 для компиляции нативных библиотек.
+
+---
 
 ### Зависимости
 - [ByeDPI](https://github.com/hufrea/byedpi)

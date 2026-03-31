@@ -30,7 +30,7 @@
         android:banner="@mipmap/ic_banner"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ByeDPI"
+        android:theme="@style/Theme.NeoDPI"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="34">
 

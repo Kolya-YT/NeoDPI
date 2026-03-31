@@ -1,15 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ByeDPI" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">#FFFFFF</item>
-        <item name="colorPrimaryVariant">#E5E5E5</item>
-        <item name="colorOnPrimary">#000000</item>
-
-        <item name="colorSecondary">#5976DF</item>
-        <item name="colorSecondaryVariant">#3C52A3</item>
-        <item name="colorOnSecondary">#FFFFFF</item>
-
-        <item name="android:statusBarColor">#000000</item>
+    <style name="Theme.NeoDPI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/neo_accent</item>
+        <item name="colorPrimaryVariant">@color/neo_accent_dark</item>
+        <item name="colorOnPrimary">@color/neo_text_primary</item>
+        <item name="colorSecondary">@color/neo_accent</item>
+        <item name="colorSecondaryVariant">@color/neo_accent_dark</item>
+        <item name="colorOnSecondary">@color/neo_text_primary</item>
+        <item name="android:windowBackground">@color/neo_bg</item>
+        <item name="android:statusBarColor">@color/neo_bg</item>
+        <item name="colorSurface">@color/neo_surface</item>
+        <item name="colorOnSurface">@color/neo_text_primary</item>
         <item name="materialCardViewStyle">@style/SmallShadowCard</item>
+    </style>
+
+    <style name="SmallShadowCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/neo_card</item>
+        <item name="cardCornerRadius">16dp</item>
     </style>
 
     <style name="CircleButton" parent="Widget.MaterialComponents.Button">

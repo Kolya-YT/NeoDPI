@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ByeDpi"
+rootProject.name = "NeoDpi"
 include(":app")

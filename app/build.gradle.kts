@@ -8,16 +8,16 @@ plugins {
 val abis = setOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
 
 android {
-    namespace = "io.github.romanvht.byedpi"
+    namespace = "com.neodpi.app"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "io.github.romanvht.byedpi"
+        applicationId = "com.neodpi.app"
         minSdk = 21
         //noinspection OldTargetApi
         targetSdk = 34
-        versionCode = 1730
-        versionName = "1.7.3"
+        versionCode = 101
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -31,8 +31,18 @@ android {
         viewBinding = true
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("../neodpi.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "neotun"
+            keyAlias = System.getenv("KEY_ALIAS") ?: "neodpi"
+            keyPassword = System.getenv("KEY_PASSWORD") ?: "neotun"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             buildConfigField("String", "VERSION_NAME",  "\"${defaultConfig.versionName}\"")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             isMinifyEnabled = true

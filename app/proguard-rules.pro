@@ -3,25 +3,25 @@
     native <methods>;
 }
 
--keep class io.github.romanvht.byedpi.core.ByeDpiProxy { *; }
+-keep class com.neodpi.app.core.ByeDpiProxy { *; }
 
--keep,allowoptimization class io.github.romanvht.byedpi.core.TProxyService { *; }
--keep,allowoptimization class io.github.romanvht.byedpi.activities.** { *; }
--keep,allowoptimization class io.github.romanvht.byedpi.services.** { *; }
--keep,allowoptimization class io.github.romanvht.byedpi.receiver.** { *; }
+-keep,allowoptimization class com.neodpi.app.core.TProxyService { *; }
+-keep,allowoptimization class com.neodpi.app.activities.** { *; }
+-keep,allowoptimization class com.neodpi.app.services.** { *; }
+-keep,allowoptimization class com.neodpi.app.receiver.** { *; }
 
--keep class io.github.romanvht.byedpi.fragments.** {
+-keep class com.neodpi.app.fragments.** {
     <init>();
 }
 
--keep,allowoptimization class io.github.romanvht.byedpi.data.** {
+-keep,allowoptimization class com.neodpi.app.data.** {
     <fields>;
 }
 
 -keepattributes Signature
 -keepattributes *Annotation*
 
--repackageclasses 'ru.romanvht'
+-repackageclasses 'com.neodpi'
 -renamesourcefileattribute ''
 -keepattributes SourceFile,InnerClasses,EnclosingMethod,Signature,RuntimeVisibleAnnotations,*Annotation*,*Parcelable*
 -allowaccessmodification
