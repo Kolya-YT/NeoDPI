@@ -6,7 +6,7 @@ import sys
 import subprocess
 
 GITHUB_API = "https://api.github.com/repos/Kolya-YT/NeoDPI/releases/latest"
-CURRENT_VERSION = "1.0.3"
+CURRENT_VERSION = "1.0.2"
 
 def _get_latest() -> dict | None:
     try:

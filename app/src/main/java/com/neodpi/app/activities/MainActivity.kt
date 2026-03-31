@@ -211,8 +211,9 @@ class MainActivity : BaseActivity() {
 
         ShortcutUtils.update(this)
 
-        // Check for updates
+        // Check for updates after 5 seconds
         lifecycleScope.launch {
+            kotlinx.coroutines.delay(5000)
             val release = UpdateUtils.checkForUpdate()
             release?.let { showUpdateDialog(it) }
         }

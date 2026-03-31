@@ -16,7 +16,6 @@ class UpdateDialog(ctk.CTkToplevel):
         self.title("Обновление")
         self.geometry("340x180")
         self.resizable(False, False)
-        self.grab_set()
         self._url = url
         self._build(version)
 
