@@ -6,9 +6,13 @@ import time
 import threading
 import winreg
 
-BYEDPI_EXE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "bin", "byedpi.exe")
-STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-                               "app", "src", "main", "assets", "proxytest_strategies.list")
+if getattr(sys, 'frozen', False):
+    BYEDPI_EXE = os.path.join(sys._MEIPASS, "bin", "byedpi.exe")
+    STRATEGIES_FILE = os.path.join(sys._MEIPASS, "assets", "proxytest_strategies.list")
+else:
+    BYEDPI_EXE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "bin", "byedpi.exe")
+    STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                                   "app", "src", "main", "assets", "proxytest_strategies.list")
 
 _process: subprocess.Popen | None = None
 

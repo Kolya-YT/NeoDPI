@@ -1,9 +1,25 @@
 import json
 import os
+import sys
 
-PREFS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "preferences.json")
-STRATEGIES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-                               "app", "src", "main", "assets", "proxytest_strategies.list")
+if getattr(sys, 'frozen', False):
+    # Running as PyInstaller EXE — save prefs next to the exe
+    _PREFS_DIR = os.path.dirname(sys.executable)
+else:
+    _PREFS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+
+PREFS_FILE = os.path.join(_PREFS_DIR, "neodpi_preferences.json")
+
+# Support both PyInstaller bundle and normal run
+if getattr(sys, 'frozen', False):
+    # Running as PyInstaller EXE
+    _BASE = sys._MEIPASS
+    STRATEGIES_FILE = os.path.join(_BASE, "assets", "proxytest_strategies.list")
+    BYEDPI_EXE = os.path.join(_BASE, "bin", "byedpi.exe")
+else:
+    _BASE = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    STRATEGIES_FILE = os.path.join(_BASE, "app", "src", "main", "assets", "proxytest_strategies.list")
+    BYEDPI_EXE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "bin", "byedpi.exe")
 
 DEFAULTS = {
     "proxy_ip": "127.0.0.1",
