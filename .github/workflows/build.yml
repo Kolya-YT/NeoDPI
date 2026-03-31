@@ -70,13 +70,25 @@ jobs:
           msystem: MINGW64
           install: mingw-w64-x86_64-gcc
 
+      - name: Patch proxy.c for Windows (remove SIGHUP)
+        run: |
+          python -c "
+          import re
+          with open('app/src/main/cpp/byedpi/proxy.c', 'r') as f:
+              content = f.read()
+          content = content.replace(
+              'signal(SIGHUP, on_hup);',
+              '#ifndef _WIN32\n    signal(SIGHUP, on_hup);\n    #endif'
+          )
+          with open('app/src/main/cpp/byedpi/proxy.c', 'w') as f:
+              f.write(content)
+          print('Patched proxy.c')
+          "
+
       - name: Compile byedpi.exe
         shell: msys2 {0}
         run: |
-          # Fix SIGHUP not available on Windows
-          sed -i 's/signal(SIGHUP, on_hup);/#ifndef _WIN32\n    signal(SIGHUP, on_hup);\n    #endif/' \
-            app/src/main/cpp/byedpi/proxy.c
-          gcc -O2 -std=c99 -DFAKE_SUPPORT -DTIMEOUT_SUPPORT -D_WIN32 \
+          gcc -O2 -std=c99 -DFAKE_SUPPORT -DTIMEOUT_SUPPORT \
             app/src/main/cpp/byedpi/main.c \
             app/src/main/cpp/byedpi/proxy.c \
             app/src/main/cpp/byedpi/desync.c \
