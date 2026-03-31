@@ -210,6 +210,16 @@ class MainActivity : BaseActivity() {
         }
 
         ShortcutUtils.update(this)
+
+        // Check for updates
+        lifecycleScope.launch {
+            val release = UpdateUtils.checkForUpdate()
+            release?.let { showUpdateDialog(it) }
+        }
+    }
+
+    private fun showUpdateDialog(release: UpdateUtils.Release) {
+        UpdateUtils.showUpdateDialog(this, release)
     }
 
     override fun onResume() {
