@@ -77,17 +77,17 @@ class HistoryUtils(context: Context) {
         Command(
             text = "-f1+nme -t3 -K t,h -s1+s -a1 -At,r,s -f1+nme -t3 -s1:5+sm -a1",
             pinned = true,
-            name = "Telegram (РКН)"
+            name = "Telegram"
         ),
         Command(
             text = "-f1+nme -t5 -s1:6+sm -a1 -As -s5:12+sm -a1 -As -d3 -q7 -r6 -Mh -a1",
             pinned = true,
-            name = "YouTube (РКН)"
+            name = "YouTube"
         ),
         Command(
             text = "-Qr -f-204 -K t,h -s1:5+sm -a1 -As -d1 -s3+s -s5+s -q7 -a1 -As -o2 -f-43 -a1",
             pinned = true,
-            name = "Discord (РКН)"
+            name = "Discord"
         ),
         Command(
             text = "-f-200 -Qr -s3:5+sm -a1 -As -d1 -s4+sm -s8+sh -f-300 -d6+sh -a1 -At,r,s -o2 -f-30 -As -r5 -Mh -r6+sh -f-250 -s2:7+s -s3:6+sm -a1",
