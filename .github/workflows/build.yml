@@ -100,6 +100,13 @@ jobs:
             -o windows/bin/byedpi.exe \
             -lws2_32 -liphlpapi -lmswsock
 
+      - name: Set version from tag
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          if (-not $version) { $version = "1.0.9" }
+          Set-Content -Path "windows/VERSION" -Value $version
+          Write-Host "Version: $version"
+
       - name: Build Windows EXE with PyInstaller
         run: |
           pyinstaller --onefile --windowed --name NeoDPI `

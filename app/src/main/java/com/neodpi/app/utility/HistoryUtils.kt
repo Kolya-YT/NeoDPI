@@ -85,7 +85,7 @@ class HistoryUtils(context: Context) {
             name = "YouTube"
         ),
         Command(
-            text = "-Qr -f-204 -s1:5+sm -a1 -As -d1 -s3+s -s5+s -q7 -a1 -As -o2 -f-43 -a1",
+            text = "-Qr -f-204 -K t,h -s1:5+sm -a1 -As -d1 -s3+s -s5+s -q7 -a1 -As -o2 -f-43 -a1",
             pinned = true,
             name = "Discord"
         ),
