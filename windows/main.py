@@ -4,38 +4,41 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import customtkinter as ctk
 from core import preferences, proxy
-from core.updater import check_update, download_and_install, CURRENT_VERSION
+from core.updater import check_update, download_and_replace, CURRENT_VERSION
 from ui.main_window import MainWindow
 from ui.settings_window import SettingsWindow
 from ui.cmd_editor import CmdEditorWindow
 from ui.tray import start_tray
 
+
 class UpdateDialog(ctk.CTkToplevel):
     def __init__(self, master, version, url):
         super().__init__(master)
         self.title("Обновление")
-        self.geometry("340x180")
+        self.geometry("340x200")
         self.resizable(False, False)
         self._url = url
+        self._master = master
         self._build(version)
 
     def _build(self, version):
         self.grid_columnconfigure(0, weight=1)
-        ctk.CTkLabel(self, text=f"Доступна новая версия {version}!",
+        ctk.CTkLabel(self, text=f"Доступна версия {version}!",
                      font=ctk.CTkFont(size=14, weight="bold")).grid(row=0, column=0, pady=(20, 4))
-        ctk.CTkLabel(self, text=f"Текущая версия: {CURRENT_VERSION}",
-                     text_color="gray").grid(row=1, column=0, pady=(0, 16))
+        ctk.CTkLabel(self, text=f"Текущая: {CURRENT_VERSION}",
+                     text_color="gray").grid(row=1, column=0, pady=(0, 12))
 
         self.progress = ctk.CTkProgressBar(self, width=280)
         self.progress.set(0)
-        self.progress.grid(row=2, column=0, padx=20, pady=(0, 12))
+        self.progress.grid(row=2, column=0, padx=20, pady=(0, 4))
         self.progress.grid_remove()
 
-        self.status_label = ctk.CTkLabel(self, text="")
-        self.status_label.grid(row=3, column=0)
+        self.status_label = ctk.CTkLabel(self, text="", text_color="gray",
+                                         font=ctk.CTkFont(size=11))
+        self.status_label.grid(row=3, column=0, pady=(0, 8))
 
         btn_frame = ctk.CTkFrame(self, fg_color="transparent")
-        btn_frame.grid(row=4, column=0, padx=20, pady=12, sticky="ew")
+        btn_frame.grid(row=4, column=0, padx=20, pady=(0, 16), sticky="ew")
         btn_frame.grid_columnconfigure((0, 1), weight=1)
 
         self.update_btn = ctk.CTkButton(btn_frame, text="Обновить", command=self._start_update)
@@ -49,10 +52,19 @@ class UpdateDialog(ctk.CTkToplevel):
 
         def on_progress(pct):
             self.after(0, lambda: self.progress.set(pct / 100))
-            if pct >= 100:
-                self.after(0, lambda: self.status_label.configure(text="Перезапуск..."))
+            self.after(0, lambda: self.status_label.configure(text=f"Скачано {pct}%"))
 
-        download_and_install(self._url, on_progress=on_progress)
+        def on_done():
+            self.after(0, lambda: self.status_label.configure(text="Перезапуск..."))
+            self.after(1500, lambda: self._master._quit())
+
+        def on_error(msg):
+            self.after(0, lambda: self.status_label.configure(
+                text=f"Ошибка: {msg}", text_color="red"))
+            self.after(0, lambda: self.update_btn.configure(state="normal", text="Обновить"))
+
+        download_and_replace(self._url, on_progress=on_progress,
+                             on_done=on_done, on_error=on_error)
 
 
 class App(ctk.CTk):
@@ -62,7 +74,7 @@ class App(ctk.CTk):
         ctk.set_default_color_theme("blue")
 
         super().__init__()
-        self.title("NeoDPI")
+        self.title(f"NeoDPI {CURRENT_VERSION}")
         self.geometry("360x280")
         self.resizable(False, False)
         self.protocol("WM_DELETE_WINDOW", self._on_close)
@@ -109,6 +121,7 @@ class App(ctk.CTk):
     def _quit(self):
         proxy.stop()
         self.destroy()
+
 
 if __name__ == "__main__":
     app = App()

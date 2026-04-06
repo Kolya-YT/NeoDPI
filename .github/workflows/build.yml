@@ -104,6 +104,7 @@ jobs:
         run: |
           pyinstaller --onefile --windowed --name NeoDPI `
             --add-data "windows/bin/byedpi.exe;bin" `
+            --add-data "windows/VERSION;." `
             --add-data "app/src/main/assets/proxytest_strategies.list;assets" `
             --add-data "app/src/main/assets/proxytest_telegram.sites;assets" `
             --add-data "app/src/main/assets/proxytest_speedtest.sites;assets" `

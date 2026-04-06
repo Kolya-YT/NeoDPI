@@ -6,7 +6,21 @@ import sys
 import subprocess
 
 GITHUB_API = "https://api.github.com/repos/Kolya-YT/NeoDPI/releases/latest"
-CURRENT_VERSION = "1.0.6"
+
+def _get_current_version() -> str:
+    # Try VERSION file next to exe or in bundle
+    candidates = []
+    if getattr(sys, 'frozen', False):
+        candidates.append(os.path.join(os.path.dirname(sys.executable), "VERSION"))
+        candidates.append(os.path.join(sys._MEIPASS, "VERSION"))
+    else:
+        candidates.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), "VERSION"))
+    for path in candidates:
+        if os.path.exists(path):
+            return open(path).read().strip()
+    return "1.0.7"
+
+CURRENT_VERSION = _get_current_version()
 
 def _get_latest() -> dict | None:
     try:
@@ -17,10 +31,12 @@ def _get_latest() -> dict | None:
         return None
 
 def _version_tuple(v: str):
-    return tuple(int(x) for x in v.lstrip("v").split("."))
+    try:
+        return tuple(int(x) for x in v.lstrip("v").split("."))
+    except Exception:
+        return (0,)
 
 def check_update(on_update_available):
-    """Check for updates in background thread. Calls on_update_available(version, url) if found."""
     def _check():
         data = _get_latest()
         if not data:
@@ -28,49 +44,55 @@ def check_update(on_update_available):
         latest = data.get("tag_name", "").lstrip("v")
         if not latest:
             return
-        try:
-            if _version_tuple(latest) > _version_tuple(CURRENT_VERSION):
-                # Find Windows EXE asset
-                url = None
-                for asset in data.get("assets", []):
-                    if asset["name"].endswith(".exe"):
-                        url = asset["browser_download_url"]
-                        break
-                on_update_available(latest, url or data.get("html_url", ""))
-        except Exception:
-            pass
+        if _version_tuple(latest) > _version_tuple(CURRENT_VERSION):
+            url = data.get("html_url", "")
+            exe_url = None
+            for asset in data.get("assets", []):
+                if asset["name"].lower().endswith(".exe"):
+                    exe_url = asset["browser_download_url"]
+                    break
+            on_update_available(latest, exe_url or url)
 
     threading.Thread(target=_check, daemon=True).start()
 
-def download_and_install(url: str, on_progress=None):
-    """Download new EXE and replace current one."""
+def download_and_replace(url: str, on_progress=None, on_done=None, on_error=None):
     def _download():
         try:
-            dest = os.path.join(os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else __file__), "NeoDPI_new.exe")
+            if getattr(sys, 'frozen', False):
+                current_exe = sys.executable
+            else:
+                on_error and on_error("Обновление доступно только для EXE версии")
+                return
+
+            dest = current_exe + ".new"
             req = urllib.request.Request(url, headers={"User-Agent": "NeoDPI"})
             with urllib.request.urlopen(req) as r:
                 total = int(r.headers.get("Content-Length", 0))
                 downloaded = 0
-                chunk = 8192
                 with open(dest, "wb") as f:
                     while True:
-                        data = r.read(chunk)
-                        if not data:
+                        chunk = r.read(8192)
+                        if not chunk:
                             break
-                        f.write(data)
-                        downloaded += len(data)
+                        f.write(chunk)
+                        downloaded += len(chunk)
                         if on_progress and total:
                             on_progress(int(downloaded / total * 100))
 
-            # Replace current exe with new one via batch script
-            current = sys.executable if getattr(sys, 'frozen', False) else dest
-            bat = dest + "_update.bat"
+            # Batch script to replace exe and restart
+            bat = current_exe + "_update.bat"
             with open(bat, "w") as f:
-                f.write(f'@echo off\ntimeout /t 2 /nobreak >nul\nmove /y "{dest}" "{current}"\nstart "" "{current}"\ndel "%~f0"\n')
+                f.write(
+                    f'@echo off\n'
+                    f'timeout /t 2 /nobreak >nul\n'
+                    f'move /y "{dest}" "{current_exe}"\n'
+                    f'start "" "{current_exe}"\n'
+                    f'del "%~f0"\n'
+                )
             subprocess.Popen(["cmd", "/c", bat], creationflags=subprocess.CREATE_NO_WINDOW)
-            if on_progress:
-                on_progress(100)
+            on_done and on_done()
+
         except Exception as e:
-            print(f"[updater] Download failed: {e}")
+            on_error and on_error(str(e))
 
     threading.Thread(target=_download, daemon=True).start()
