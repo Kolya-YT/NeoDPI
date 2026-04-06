@@ -29,9 +29,18 @@ jobs:
       - name: Install NDK
         run: sdkmanager "ndk;27.0.12077973" "cmake;3.22.1"
 
-      - name: Decode keystore
+      - name: Set version from tag
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > neodpi.jks
+          TAG="${{ github.ref_name }}"
+          VERSION="${TAG#v}"
+          if [ -z "$VERSION" ]; then VERSION="1.1.2"; fi
+          sed -i "s/versionName = \".*\"/versionName = \"$VERSION\"/" app/build.gradle.kts
+          CODE=$(echo $VERSION | tr -d '.')
+          sed -i "s/versionCode = [0-9]*/versionCode = $CODE/" app/build.gradle.kts
+          echo "Android version: $VERSION ($CODE)"
+
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > neodpi.jks
 
       - name: Build Release APK
         run: ./gradlew assembleRelease
@@ -64,16 +73,15 @@ jobs:
       - name: Install dependencies
         run: pip install customtkinter pystray pillow pyinstaller
 
-      - name: Install MSYS2 & build byedpi.exe
+      - name: Install MSYS2
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
           install: mingw-w64-x86_64-gcc
 
-      - name: Patch proxy.c for Windows (remove SIGHUP)
+      - name: Patch proxy.c for Windows
         run: |
           python -c "
-          import re
           with open('app/src/main/cpp/byedpi/proxy.c', 'r') as f:
               content = f.read()
           content = content.replace(
@@ -103,8 +111,9 @@ jobs:
       - name: Set version from tag
         run: |
           $version = "${{ github.ref_name }}".TrimStart("v")
-          if (-not $version) { $version = "1.0.9" }
+          if (-not $version) { $version = "1.1.2" }
           Set-Content -Path "windows/VERSION" -Value $version
+          (Get-Content windows/core/updater.py) -replace 'return "[\d\.]+"', "return `"$version`"" | Set-Content windows/core/updater.py
           Write-Host "Version: $version"
 
       - name: Build Windows EXE with PyInstaller
@@ -125,10 +134,10 @@ jobs:
             --hidden-import "ui.tray" `
             windows/main.py
 
-      - name: Verify EXE was built
+      - name: Verify EXE
         run: |
           if (Test-Path "dist/NeoDPI.exe") {
-            Write-Host "EXE built successfully: $((Get-Item dist/NeoDPI.exe).Length) bytes"
+            Write-Host "EXE OK: $((Get-Item dist/NeoDPI.exe).Length) bytes"
           } else {
             Write-Error "EXE not found!"
             exit 1
